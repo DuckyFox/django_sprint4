@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+  <div class="row justify-content-between">
+    <div class="card col-5">
+      <div class="card-header">
+        Добавление поста
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          {% bootstrap_button button_type="submit" content="Отправить" %}
+        </form>
+       {% with data=request.POST %}
+          {% if form.is_valid %}
+            <h2>Запись Добавлена!</h2>
+            {{ form.instance.id }}
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    <img src="{% static 'img/ugomonis-chert.png' %}" class="img-thumbnail col-7" alt="img-thumbnail">
+
+  </div>
+{% endblock %} 
