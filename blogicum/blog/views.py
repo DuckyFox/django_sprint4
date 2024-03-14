@@ -38,8 +38,7 @@ class IndexListView(ListView):
                  'category', 'location', 'author').filter(
                  is_published=True,
                  category__is_published=True,
-                 pub_date__lte=dt.now()
-                 ).order_by('pub_date').\
+                 pub_date__lte=dt.now()).order_by('pub_date').\
             annotate(comment_count=Count('comment'))
 
     def get_context_data(self, **kwargs):
