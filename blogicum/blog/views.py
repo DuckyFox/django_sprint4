@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from datetime import datetime as dt
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.db.models import Count
 from django.core.exceptions import PermissionDenied
@@ -10,17 +10,16 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView,
-    View)
+    DeleteView
+)
 from django.utils import timezone
-
-from blog.utils import get_post_data
 
 from blog.models import Post, Category, Comment
 from .forms import PostForm, CommentForm, ProfileEditForm
 
 PAGES_ON_POST = 10
 User = get_user_model()
+
 
 class PostMixin:
     model = Post
@@ -39,7 +38,7 @@ class IndexListView(ListView):
                  is_published=True,
                  category__is_published=True,
                  pub_date__lte=dt.now()
-             ).order_by('pub_date').annotate(comment_count=Count('comment'))
+                 ).order_by('pub_date').annotate(comment_count=Count('comment'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,7 +71,7 @@ class PostUpdateView(PostMixin, LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('blog:post_detail',
-                       kwargs={'pk': self.kwargs['post_id']})
+                            kwargs={'pk': self.kwargs['post_id']})
 
 
 class PostDeleteView(PostMixin, LoginRequiredMixin, DeleteView):
@@ -89,7 +88,8 @@ class PostDeleteView(PostMixin, LoginRequiredMixin, DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy("blog:profile", kwargs={"username": self.request.user})
+        return reverse_lazy("blog:profile",
+                            kwargs={"username": self.request.user})
 
 
 class PostDetailView(DetailView):
@@ -129,14 +129,15 @@ class CategoryPostsListView(ListView):
         )
 
         return (
-            category.posts.select_related('location', 'author', 'category')
-            .filter(is_published=True, pub_date__lte=timezone.now())
-            .order_by("pub_date")
+                category.posts.select_related('location', 'author', 'category')
+                .filter(is_published=True, pub_date__lte=timezone.now())
+                .order_by("pub_date")
                 )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = get_object_or_404(Category, slug=self.kwargs['category_slug'])
+        context['category'] = get_object_or_404(Category,
+                                                slug=self.kwargs['category_slug'])
         return context
 
 
@@ -177,7 +178,8 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     post_obj = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.post_obj = get_object_or_404(Post, pk=kwargs['post_id'], is_published=True)
+        self.post_obj = get_object_or_404(Post,
+                                          pk=kwargs['post_id'], is_published=True)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form, *args, **kwargs):
@@ -187,7 +189,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy("blog:post_detail",
-                       kwargs={'pk': self.kwargs['post_id']})
+                            kwargs={'pk': self.kwargs['post_id']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -232,4 +234,3 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
     def get_object(self):
         comment = get_object_or_404(Comment, pk=self.kwargs.get('comment_pk'))
         return comment
-    

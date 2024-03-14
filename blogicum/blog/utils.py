@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from .models import Post
 
+
 def get_post_data(kwargs):
     return get_object_or_404(
         Post,

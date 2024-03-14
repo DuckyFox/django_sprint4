@@ -9,7 +9,6 @@ TITLE_LENGTH = NAME_LENGTH = 256
 TEXT_LENGHT = 512
 
 
-
 class Category(BaseModel):
     title = models.CharField(max_length=TITLE_LENGTH, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Описание')
@@ -101,4 +100,3 @@ class Comment(BaseModel):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ('created_at',)
-
