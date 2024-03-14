@@ -80,7 +80,7 @@ class Post(BaseModel):
         return self.title
 
 
-class comment(BaseModel):
+class Comment(BaseModel):
     text = models.TextField(verbose_name='текст комментария')
     post = models.ForeignKey(
         Post,

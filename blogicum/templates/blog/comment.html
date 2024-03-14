@@ -19,7 +19,7 @@
           {% endif %}
         </div>
         <div class="card-body">
-          <form method="post">
+          <form method="post"
             {% if '/edit_comment/' in request.path %}
               action="{% url 'blog:edit_comment' comment.post_id comment.id %}"
             {% endif %}>
