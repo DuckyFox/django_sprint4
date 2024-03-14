@@ -128,16 +128,15 @@ class CategoryPostsListView(ListView):
             is_published=True,
         )
 
-        return (
-                category.posts.select_related('location', 'author', 'category')
+        return (category.posts.select_related('location', 'author', 'category')
                 .filter(is_published=True, pub_date__lte=timezone.now())
-                .order_by("pub_date")
-                )
+                .order_by("pub_date"))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = get_object_or_404(Category,
-                                                slug=self.kwargs['category_slug'])
+        context['category'] = \
+            get_object_or_404(Category,
+                              slug=self.kwargs['category_slug'])
         return context
 
 
@@ -179,7 +178,8 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.post_obj = get_object_or_404(Post,
-                                          pk=kwargs['post_id'], is_published=True)
+                                          pk=kwargs['post_id'],
+                                          is_published=True)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form, *args, **kwargs):
