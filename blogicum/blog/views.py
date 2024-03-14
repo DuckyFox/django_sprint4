@@ -32,7 +32,7 @@ class IndexListView(ListView):
     paginate_by = PAGES_ON_POST
     template_name = 'blog/index.html'
 
-    def suitable_posts(self):
+    def get_queryset(self):
         return Post.objects \
             .select_related('category', 'location', 'author') \
             .filter(
@@ -45,11 +45,8 @@ class IndexListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comment_count'] = self.suitable_posts().count()
+        context['comment_count'] = self.get_queryset().count()
         return context
-
-    def get_queryset(self):
-        return self.suitable_posts()
 
 
 class PostCreateView(PostMixin, LoginRequiredMixin, CreateView):
